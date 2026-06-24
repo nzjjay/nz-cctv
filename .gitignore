@@ -1,0 +1,5 @@
+*.xlsx
+cameras.json
+__pycache__/
+*.pyc
+.claude/

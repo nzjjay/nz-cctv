@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NZ CCTV Camera Map</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: Arial, sans-serif; display: flex; flex-direction: column; height: 100vh; }
+  #header {
+    background: #1a1a2e;
+    color: white;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+    z-index: 2000;
+  }
+  #header h1 { font-size: 15px; font-weight: 600; letter-spacing: 0.01em; }
+  #header a { color: #90caf9; font-size: 13px; text-decoration: none; white-space: nowrap; margin-left: 16px; }
+  #header a:hover { text-decoration: underline; }
+  #map { flex: 1; width: 100%; }
+  @media (max-width: 600px) {
+    #header h1 { font-size: 13px; }
+  }
+  #controls {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 1000;
+    background: white;
+    padding: 14px 16px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    min-width: 220px;
+  }
+  #controls-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+  }
+  #controls h3 { font-size: 14px; color: #333; margin: 0; }
+  #toggle-btn {
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    color: #666;
+    padding: 0 0 0 8px;
+    line-height: 1;
+  }
+  #controls-body { margin-top: 10px; }
+  .filter-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-size: 13px; cursor: pointer; }
+  .dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+  .dot-nonAnpr { background: #2196F3; }
+  .dot-anprExisting { background: #F44336; }
+  .dot-planned { background: #FF9800; }
+  #stats { margin-top: 10px; font-size: 12px; color: #666; border-top: 1px solid #eee; padding-top: 8px; }
+  .filter-section { margin-top: 10px; border-top: 1px solid #eee; padding-top: 10px; }
+  .filter-label { font-size: 12px; color: #555; margin-bottom: 4px; font-weight: 600; }
+  #agency-select {
+    width: 100%;
+    font-size: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 4px 6px;
+    color: #333;
+    background: #fff;
+  }
+  @media (max-width: 600px) {
+    #controls { min-width: 170px; padding: 10px 12px; }
+    #controls-body.collapsed { display: none; }
+  }
+  .leaflet-popup-content { font-size: 13px; line-height: 1.6; }
+  .popup-title { font-weight: bold; margin-bottom: 4px; }
+  .badge {
+    display: inline-block;
+    padding: 1px 6px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: bold;
+    color: white;
+    margin-left: 4px;
+  }
+  .badge-nonAnpr { background: #2196F3; }
+  .badge-anpr { background: #F44336; }
+</style>
+</head>
+<body>
+<div id="header">
+  <h1>Research Project: Public CCTV Cameras in New Zealand</h1>
+  <a href="https://github.com/nzjjay/nz-cctv#readme" target="_blank" rel="noopener">Learn more</a>
+</div>
+<div id="map"></div>
+<div id="controls">
+  <div id="controls-header">
+    <h3>NZ CCTV Cameras</h3>
+    <button id="toggle-btn" aria-label="Toggle legend">▾</button>
+  </div>
+  <div id="controls-body">
+    <label class="filter-row"><input type="checkbox" id="chk-nonAnpr" checked>
+      <span class="dot dot-nonAnpr"></span> Non-ANPR
+    </label>
+    <label class="filter-row"><input type="checkbox" id="chk-anpr" checked>
+      <span class="dot dot-anprExisting"></span> ANPR
+    </label>
+    <div class="filter-section">
+      <div class="filter-label">Agency</div>
+      <select id="agency-select">
+        <option value="">All agencies</option>
+      </select>
+    </div>
+    <div id="stats">Loading...</div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+  const header = document.getElementById('controls-header');
+  const body = document.getElementById('controls-body');
+  const btn = document.getElementById('toggle-btn');
+  let collapsed = false;
+  function isMobile() { return window.innerWidth <= 600; }
+  function applyCollapsed(state) {
+    collapsed = state;
+    body.classList.toggle('collapsed', collapsed);
+    btn.textContent = collapsed ? '▸' : '▾';
+  }
+  if (isMobile()) applyCollapsed(true);
+  header.addEventListener('click', () => {
+    if (!isMobile()) return;
+    applyCollapsed(!collapsed);
+  });
+</script>
+<script>
+const map = L.map('map').setView([-41.2, 174.0], 6);
+
+L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+  attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors © <a href="https://carto.com/attributions">CARTO</a>',
+  subdomains: 'abcd',
+  maxZoom: 20
+}).addTo(map);
+
+const RADIUS_M = 30;
+
+const layers = { nonAnpr: L.layerGroup(), anpr: L.layerGroup() };
+Object.values(layers).forEach(l => l.addTo(map));
+
+function circleKey(cam) {
+  return cam.anpr === 1 ? 'anpr' : 'nonAnpr';
+}
+function colorFor(cam) {
+  return cam.anpr === 1 ? '#F44336' : '#2196F3';
+}
+
+function buildPopup(cam) {
+  const isAnpr = cam.anpr === 1;
+  const badgeCls = isAnpr ? 'badge-anpr' : 'badge-nonAnpr';
+  const typeLabel = isAnpr ? 'ANPR' : 'Non-ANPR';
+  let html = `<div class="popup-title">${cam.name} <span class="badge ${badgeCls}">${typeLabel}</span></div>`;
+  if (cam.agency) html += `<div>Agency: ${cam.agency}</div>`;
+  if (cam.region) html += `<div>Region: ${cam.region}</div>`;
+  if (cam.business_unit) html += `<div>Purpose: ${cam.business_unit}</div>`;
+  if (cam.make) html += `<div>Make: ${cam.make}</div>`;
+  html += `<div style="margin-top:4px;color:#888;font-size:11px">${cam.lat.toFixed(6)}, ${cam.lng.toFixed(6)}</div>`;
+  return html;
+}
+
+fetch('cameras.json')
+  .then(r => r.json())
+  .then(cameras => {
+    // Populate agency dropdown
+    const agencies = [...new Set(cameras.map(c => c.agency).filter(Boolean))].sort();
+    const sel = document.getElementById('agency-select');
+    agencies.forEach(a => {
+      const opt = document.createElement('option');
+      opt.value = a;
+      opt.textContent = a;
+      sel.appendChild(opt);
+    });
+
+    // Build circle objects with cam reference
+    const allCircles = cameras.map(cam => ({
+      cam,
+      circle: L.circle([cam.lat, cam.lng], {
+        radius: RADIUS_M,
+        color: colorFor(cam),
+        fillColor: colorFor(cam),
+        fillOpacity: 0.5,
+        weight: 1
+      }).bindPopup(buildPopup(cam))
+    }));
+
+    function applyFilters() {
+      const showNonAnpr = document.getElementById('chk-nonAnpr').checked;
+      const showAnpr = document.getElementById('chk-anpr').checked;
+      const agencyFilter = sel.value;
+
+      layers.nonAnpr.clearLayers();
+      layers.anpr.clearLayers();
+      let visible = 0;
+
+      allCircles.forEach(({ cam, circle }) => {
+        if (agencyFilter && cam.agency !== agencyFilter) return;
+        const key = circleKey(cam);
+        if (key === 'anpr' && !showAnpr) return;
+        if (key === 'nonAnpr' && !showNonAnpr) return;
+        layers[key].addLayer(circle);
+        visible++;
+      });
+
+      document.getElementById('stats').innerHTML =
+        `Showing: <b>${visible}</b> of <b>${cameras.length}</b>`;
+    }
+
+    applyFilters();
+
+    document.getElementById('chk-nonAnpr').addEventListener('change', applyFilters);
+    document.getElementById('chk-anpr').addEventListener('change', applyFilters);
+    sel.addEventListener('change', applyFilters);
+  });
+</script>
+</body>
+</html>
