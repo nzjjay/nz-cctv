@@ -48,6 +48,7 @@ There have been several news articles on surveillance in New Zealand
 | Palmerston North | Palmerston North City Council | CCTV camera locations (LGOIMA release — agency does not hold exact coordinates) https://fyi.org.nz/request/29153-cctv-and-anpr-cameras | 165 | 2024 |
 | Cambridge / Te Awamutu / Kihikihi / Leamington / Ngāhinapōuri / Wharepapa South | Waipa District Council | CCTV camera locations (public website) https://www.waipadc.govt.nz/our-services/roads-and-footpaths/roads/closed-circuit-television-cctv | 25 | Jun 2026 |
 | Auckland / Waikato | NZ Transport Agency (NZTA) | Auckland CCTV camera coordinates (OIA-22477) | 339 | Jun 2026 |
+| Thames / Coromandel / Whitianga / Whangamata / Tairua / Pauanui / Matarangi | Thames-Coromandel District Council | CCTV register (council OIA release — site addresses geocoded, no exact coordinates held) | 29 sites (~96 cameras) | 2025 |
 | Whanganui | Whanganui District Council | CCTV camera locations (RNZ OIA dataset) | 26 | Apr 2022 |
 | Porirua | Porirua City Council | CCTV camera locations (RNZ OIA dataset) | 64 | Apr 2022 |
 | Upper Hutt | Upper Hutt City Council | CCTV camera locations (RNZ OIA dataset) | 53 | Apr 2022 |
@@ -59,7 +60,7 @@ There have been several news articles on surveillance in New Zealand
 | Wairoa | Wairoa District Council | CCTV camera locations (RNZ OIA dataset) | 14 | Apr 2022 |
 | Hawke's Bay | Hawkes Bay Regional Council / Central Hawke's Bay District Council | CCTV camera locations (RNZ OIA dataset) | 9 | Apr 2022 |
 | Nelson / Tasman | Tasman District Council | CCTV camera locations (RNZ OIA dataset) | 46 | Apr 2022 |
-| Waikato | South Waikato / Waitomo / Otorohanga / Thames-Coromandel / Matamata-Piako / Kaipara | CCTV camera locations (RNZ OIA dataset) | 62 | Apr 2022 |
+| Waikato | South Waikato / Waitomo / Otorohanga / Matamata-Piako / Kaipara | CCTV camera locations (RNZ OIA dataset) | 56 | Apr 2022 |
 | Kawerau | Kawerau District Council | CCTV camera locations (RNZ OIA dataset) | 25 | Apr 2022 |
 | Ōpōtiki | Opotiki District Council | CCTV camera locations (RNZ OIA dataset) | 12 | Apr 2022 |
 | Northland | Northland Regional Council / Kaipara District Council | CCTV camera locations (RNZ OIA dataset) | 27 | Apr 2022 |
