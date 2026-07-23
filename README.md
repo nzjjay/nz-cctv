@@ -47,7 +47,7 @@ There have been several news articles on surveillance in New Zealand
 | Whangarei | Whangarei District Council | CCTV camera locations (OIA release — agency does not hold exact coordinates) https://www.wdc.govt.nz/Community/Safer-communities/CCTV | 31 | Jun 2026 |
 | Palmerston North | Palmerston North City Council | CCTV camera locations (LGOIMA release — agency does not hold exact coordinates) https://fyi.org.nz/request/29153-cctv-and-anpr-cameras | 165 | 2024 |
 | Cambridge / Te Awamutu / Kihikihi / Leamington / Ngāhinapōuri / Wharepapa South | Waipa District Council | CCTV camera locations (public website) https://www.waipadc.govt.nz/our-services/roads-and-footpaths/roads/closed-circuit-television-cctv | 25 | Jun 2026 |
-| Auckland / Waikato | NZ Transport Agency (NZTA) | Auckland CCTV camera coordinates (OIA-22477) | 339 | Jun 2026 |
+| Nationwide | NZ Transport Agency (NZTA) | State highway operations & traffic CCTV camera coordinates (OIA release — supersedes the earlier Auckland-only OIA-22477 dataset) | 694 | Jul 2026 |
 | Thames / Coromandel / Whitianga / Whangamata / Tairua / Pauanui / Matarangi | Thames-Coromandel District Council | CCTV register (council OIA release — site addresses geocoded, no exact coordinates held) | 29 sites (~96 cameras) | 2025 |
 | Whanganui | Whanganui District Council | CCTV camera locations (RNZ OIA dataset) | 26 | Apr 2022 |
 | Porirua | Porirua City Council | CCTV camera locations (RNZ OIA dataset) | 64 | Apr 2022 |
